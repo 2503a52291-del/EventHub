@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Events & Workshops</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">EventHub</div>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#events">Events</a>
+            <a href="#footer">About</a>
+            <a href="/admin">Admin</a>
+        </div>
+
+    </nav>
+
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+
+        <div class="hero-content">
+
+            <p class="hero-label">EVENTS & WORKSHOPS</p>
+
+            <h1>
+                Discover Events.<br>
+                Create Experiences.
+            </h1>
+
+            <p>
+                Explore workshops, learn new skills and reserve your place.
+            </p>
+
+            <a href="#events" class="hero-button">
+                Explore Events →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- EVENTS SECTION -->
+    <section class="events-section" id="events">
+
+        <div class="section-heading">
+
+            <p>FIND YOUR NEXT EXPERIENCE</p>
+
+            <h2>Upcoming Events</h2>
+
+        </div>
+
+
+        <div class="events-container">
+
+            {% for event in events %}
+
+            <div class="event-card"
+                 data-event-id="{{ event.id }}">
+
+                <div class="event-card-content">
+
+                    <span class="event-status">
+                        WORKSHOP ● Registration Open
+                    </span>
+
+                    <h3>{{ event.name }}</h3>
+
+                    <p>{{ event.description }}</p>
+
+                    <div class="event-information">
+
+                        <div>
+                            <strong>DATE</strong>
+                            <span>{{ event.date }}</span>
+                        </div>
+
+                        <div>
+                            <strong>AVAILABLE SEATS</strong>
+                            <span class="available-seats">
+                                {{ event.available_seats }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            class="view-details-btn">
+                        View Details →
+                    </button>
+
+                </div>
+
+
+                <!-- EVENT DETAILS -->
+                <div class="event-details-panel" hidden>
+
+                    <button type="button"
+                            class="close-details-btn">
+                        ✕
+                    </button>
+
+                    <h3>Event Details</h3>
+
+                    <p>
+                        <strong>Event:</strong>
+                        {{ event.name }}
+                    </p>
+
+                    <p>
+                        <strong>Description:</strong>
+                        {{ event.description }}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        {{ event.date }}
+                    </p>
+
+                    <p>
+                        <strong>Venue:</strong>
+                        {{ event.venue }}
+                    </p>
+
+                    <p>
+                        <strong>Total Capacity:</strong>
+                        {{ event.capacity }}
+                    </p>
+
+                    <p>
+                        <strong>Available Seats:</strong>
+
+                        <span class="details-available-seats">
+                            {{ event.available_seats }}
+                        </span>
+                    </p>
+
+
+                    <!-- SIDE-BY-SIDE BUTTONS -->
+                    <div class="event-action-buttons">
+
+                        <button type="button"
+                                class="open-registration-btn">
+                            Register Now →
+                        </button>
+
+                        <button type="button"
+                                class="open-cancellation-btn">
+                            Cancel Registration
+                        </button>
+
+                    </div>
+
+
+                    <!-- REGISTRATION FORM -->
+                    <div class="registration-box" hidden>
+
+                        <h4>Register for Event</h4>
+
+                        <form class="registration-form">
+
+                            <input type="text"
+                                   name="username"
+                                   placeholder="Enter your name"
+                                   required>
+
+                            <input type="email"
+                                   name="email"
+                                   placeholder="Enter your email"
+                                   required>
+
+                            <button type="submit">
+                                Confirm Registration
+                            </button>
+
+                        </form>
+
+                        <p class="registration-message"></p>
+
+                    </div>
+
+
+                    <!-- CANCELLATION FORM -->
+                    <div class="cancellation-section" hidden>
+
+                        <h4>Cancel Registration</h4>
+
+                        <form class="cancellation-form">
+
+                            <input type="email"
+                                   name="email"
+                                   placeholder="Enter registered email"
+                                   required>
+
+                            <button type="submit">
+                                Confirm Cancellation
+                            </button>
+
+                        </form>
+
+                        <p class="cancellation-message"></p>
+
+                    </div>
+
+                    <button type="button"
+                            class="close-details-bottom">
+                        ← Back to Events
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer id="footer">
+
+        <h2>EventHub.</h2>
+
+        <p>Event & Workshop Registration System</p>
+
+        <p>© 2026 EventHub. All Rights Reserved.</p>
+
+    </footer>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
