@@ -5,7 +5,9 @@
 
 // HTML-safe text
 function escapeHTML(value) {
+
     return String(value ?? "").replace(/[&<>"']/g, function (char) {
+
         const entities = {
             "&": "&amp;",
             "<": "&lt;",
@@ -15,6 +17,7 @@ function escapeHTML(value) {
         };
 
         return entities[char];
+
     });
 }
 
@@ -29,7 +32,9 @@ async function loadDashboard() {
 
     try {
 
-        const response = await fetch("/api/admin/dashboard");
+        const response = await fetch("/api/admin/dashboard", {
+            cache: "no-store"
+        });
 
         if (response.status === 401) {
             window.location.href = "/admin/login";
@@ -39,7 +44,7 @@ async function loadDashboard() {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || "Unable to load dashboard");
+            throw new Error(data.message || "Unable to load dashboard.");
         }
 
         // Summary cards
@@ -55,28 +60,25 @@ async function loadDashboard() {
         document.getElementById("availableSeats").textContent =
             data.summary.available_seats;
 
-
-        // Load events
+        // Display events
         displayEvents(data.events);
 
-        // Load participants
+        // Display participants
         displayParticipants(data.participants);
 
-        // Populate concurrent test dropdown
+        // Update event dropdown
         populateEventDropdown(data.events);
 
-        if (message) {
-            message.textContent = "";
-        }
+        message.textContent = "";
 
     } catch (error) {
 
         console.error("Dashboard Error:", error);
 
-        if (message) {
-            message.textContent = error.message;
-        }
+        message.textContent = error.message;
+
     }
+
 }
 
 
@@ -104,24 +106,18 @@ function displayEvents(events) {
         return `
             <tr>
                 <td>${escapeHTML(event.id)}</td>
-
                 <td>${escapeHTML(event.name)}</td>
-
                 <td>${escapeHTML(event.date)}</td>
-
                 <td>${escapeHTML(event.venue)}</td>
-
                 <td>${escapeHTML(event.capacity)}</td>
-
                 <td>${escapeHTML(event.registered)}</td>
-
                 <td>${escapeHTML(event.available_seats)}</td>
-
                 <td>${escapeHTML(event.occupancy)}%</td>
             </tr>
         `;
 
     }).join("");
+
 }
 
 
@@ -149,18 +145,15 @@ function displayParticipants(participants) {
         return `
             <tr>
                 <td>${escapeHTML(person.id)}</td>
-
                 <td>${escapeHTML(person.name)}</td>
-
                 <td>${escapeHTML(person.email)}</td>
-
                 <td>${escapeHTML(person.event_name)}</td>
-
                 <td>${escapeHTML(person.registered_at)}</td>
             </tr>
         `;
 
     }).join("");
+
 }
 
 
@@ -184,7 +177,7 @@ function populateEventDropdown(events) {
 
         const option = document.createElement("option");
 
-        option.value = event.id;
+        option.value = String(event.id);
 
         option.textContent =
             `${event.name} (${event.available_seats} seats available)`;
@@ -193,10 +186,10 @@ function populateEventDropdown(events) {
 
     });
 
-    // Preserve selected event if it still exists
     if (events.some(event => String(event.id) === selectedValue)) {
         dropdown.value = selectedValue;
     }
+
 }
 
 
@@ -233,7 +226,6 @@ if (addEventForm) {
 
         };
 
-
         if (
             !eventData.name ||
             !eventData.date ||
@@ -244,19 +236,17 @@ if (addEventForm) {
         ) {
 
             message.textContent = "Please enter valid event details.";
+            message.style.color = "red";
 
             return;
         }
 
-
         try {
 
             button.disabled = true;
-
             button.textContent = "Adding Event...";
 
             message.textContent = "Saving event...";
-
 
             const response = await fetch("/api/admin/events", {
 
@@ -270,12 +260,10 @@ if (addEventForm) {
 
             });
 
-
             if (response.status === 401) {
                 window.location.href = "/admin/login";
                 return;
             }
-
 
             const result = await response.json();
 
@@ -283,32 +271,25 @@ if (addEventForm) {
                 throw new Error(result.message || "Unable to add event.");
             }
 
-
             message.textContent =
                 result.message || "Event added successfully!";
 
             message.style.color = "green";
 
-
             addEventForm.reset();
 
-
-            // Refresh dashboard after adding event
             await loadDashboard();
-
 
         } catch (error) {
 
             console.error("Add Event Error:", error);
 
             message.textContent = error.message;
-
             message.style.color = "red";
 
         } finally {
 
             button.disabled = false;
-
             button.textContent = "Add Event";
 
         }
@@ -319,7 +300,7 @@ if (addEventForm) {
 
 
 // ==========================================
-// REFRESH DASHBOARD BUTTON
+// REFRESH DASHBOARD
 // ==========================================
 
 const refreshButton = document.getElementById("refreshButton");
@@ -341,51 +322,89 @@ if (concurrentButton) {
 
     concurrentButton.addEventListener("click", async function () {
 
-        const eventId = document.getElementById("testEvent").value;
+        const eventDropdown = document.getElementById("testEvent");
 
-        const name1 = document.getElementById("member1Name").value.trim();
+        const name1Input = document.getElementById("member1Name");
+        const email1Input = document.getElementById("member1Email");
 
-        const email1 = document.getElementById("member1Email").value.trim();
-
-        const name2 = document.getElementById("member2Name").value.trim();
-
-        const email2 = document.getElementById("member2Email").value.trim();
+        const name2Input = document.getElementById("member2Name");
+        const email2Input = document.getElementById("member2Email");
 
         const results = document.getElementById("concurrentResults");
 
+        // Read the current input values
+        const eventId = eventDropdown.value;
 
-        // Validate inputs
-        if (!eventId || !name1 || !email1 || !name2 || !email2) {
+        const name1 = name1Input.value.trim();
+        const email1 = email1Input.value.trim();
 
-            results.textContent = "Please fill in all participant details and select an event.";
+        const name2 = name2Input.value.trim();
+        const email2 = email2Input.value.trim();
+
+
+        console.log("Concurrent Test Input:", {
+            eventId,
+            name1,
+            email1,
+            name2,
+            email2
+        });
+
+
+        // Validate event selection
+        if (!eventId) {
+
+            results.textContent = "Please select an event.";
 
             return;
         }
 
 
+        // Validate participant details
+        if (!name1 || !email1 || !name2 || !email2) {
+
+            results.textContent =
+                "Please enter the name and email for both participants.";
+
+            return;
+        }
+
+
+        // Validate email format
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email1) || !emailPattern.test(email2)) {
+
+            results.textContent = "Please enter valid email addresses.";
+
+            return;
+        }
+
+
+        // Prevent same email
         if (email1.toLowerCase() === email2.toLowerCase()) {
 
-            results.textContent = "Please enter two different email addresses.";
+            results.textContent =
+                "Please enter two different email addresses.";
 
             return;
         }
-
-
-        concurrentButton.disabled = true;
-
-        concurrentButton.textContent = "Testing...";
-
-        results.innerHTML = "<p>Sending two registration requests simultaneously...</p>";
 
 
         try {
 
+            concurrentButton.disabled = true;
+            concurrentButton.textContent = "Testing...";
+
+            results.innerHTML = `
+                <p>Sending two registration requests simultaneously...</p>
+            `;
+
+
             const participant1 = {
 
                 name: name1,
-
                 email: email1,
-
                 event_id: Number(eventId)
 
             };
@@ -394,9 +413,7 @@ if (concurrentButton) {
             const participant2 = {
 
                 name: name2,
-
                 email: email2,
-
                 event_id: Number(eventId)
 
             };
@@ -432,27 +449,54 @@ if (concurrentButton) {
             ]);
 
 
+            // Read both responses
             const resultsData = await Promise.all(
-                responses.map(response => response.json())
+
+                responses.map(async response => {
+
+                    const data = await response.json();
+
+                    return {
+                        ...data,
+                        httpStatus: response.status
+                    };
+
+                })
+
             );
 
 
+            // Display results
             results.innerHTML = `
                 <h3>Concurrent Registration Results</h3>
 
                 <div class="test-result">
+
                     <h4>Participant 1: ${escapeHTML(name1)}</h4>
-                    <p>${escapeHTML(resultsData[0].message || "Request completed")}</p>
+
+                    <p>
+                        ${escapeHTML(
+                            resultsData[0].message || "Request completed"
+                        )}
+                    </p>
+
                 </div>
 
                 <div class="test-result">
+
                     <h4>Participant 2: ${escapeHTML(name2)}</h4>
-                    <p>${escapeHTML(resultsData[1].message || "Request completed")}</p>
+
+                    <p>
+                        ${escapeHTML(
+                            resultsData[1].message || "Request completed"
+                        )}
+                    </p>
+
                 </div>
             `;
 
 
-            // Refresh dashboard after test
+            // Refresh dashboard after both requests
             await loadDashboard();
 
 
@@ -484,7 +528,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadDashboard();
 
-    // Automatically refresh every 30 seconds
+    // Refresh dashboard every 30 seconds
     setInterval(loadDashboard, 30000);
 
 });

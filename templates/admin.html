@@ -11,7 +11,6 @@
 
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">EventHub</div>
 
@@ -25,7 +24,6 @@
 
     <main class="admin-container">
 
-        <!-- Dashboard Header -->
         <div class="admin-header">
             <h1>Admin Dashboard</h1>
             <p>Manage events, registrations and participants.</p>
@@ -66,51 +64,33 @@
 
                 <div class="form-group">
                     <label for="eventName">Event Name</label>
-                    <input
-                        type="text"
-                        id="eventName"
-                        placeholder="Enter event name"
-                        required
-                    >
+                    <input type="text" id="eventName"
+                           placeholder="Enter event name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="eventDate">Event Date</label>
-                    <input
-                        type="date"
-                        id="eventDate"
-                        required
-                    >
+                    <input type="date" id="eventDate" required>
                 </div>
 
                 <div class="form-group">
                     <label for="eventDescription">Description</label>
-                    <textarea
-                        id="eventDescription"
-                        placeholder="Enter event description"
-                        required
-                    ></textarea>
+                    <textarea id="eventDescription"
+                              placeholder="Enter event description"
+                              required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="eventVenue">Venue</label>
-                    <input
-                        type="text"
-                        id="eventVenue"
-                        placeholder="Enter event venue"
-                        required
-                    >
+                    <input type="text" id="eventVenue"
+                           placeholder="Enter event venue" required>
                 </div>
 
                 <div class="form-group">
                     <label for="eventCapacity">Total Seats</label>
-                    <input
-                        type="number"
-                        id="eventCapacity"
-                        placeholder="Enter total seats"
-                        min="1"
-                        required
-                    >
+                    <input type="number" id="eventCapacity"
+                           placeholder="Enter total seats"
+                           min="1" required>
                 </div>
 
                 <button type="submit" id="addEventButton">
@@ -199,7 +179,6 @@
                 </div>
             </div>
 
-            <!-- Event Selection -->
             <div class="form-group event-select-group">
                 <label for="testEvent">Select Event</label>
 
@@ -208,7 +187,6 @@
                 </select>
             </div>
 
-            <!-- Two Participants -->
             <div class="two-user-grid">
 
                 <!-- Participant 1 -->
@@ -219,20 +197,14 @@
 
                     <div class="form-group">
                         <label for="member1Name">Full Name</label>
-                        <input
-                            type="text"
-                            id="member1Name"
-                            placeholder="Enter participant name"
-                        >
+                        <input type="text" id="member1Name"
+                               placeholder="Enter participant name">
                     </div>
 
                     <div class="form-group">
                         <label for="member1Email">Email Address</label>
-                        <input
-                            type="email"
-                            id="member1Email"
-                            placeholder="Enter email address"
-                        >
+                        <input type="email" id="member1Email"
+                               placeholder="Enter email address">
                     </div>
 
                 </div>
@@ -245,43 +217,34 @@
 
                     <div class="form-group">
                         <label for="member2Name">Full Name</label>
-                        <input
-                            type="text"
-                            id="member2Name"
-                            placeholder="Enter participant name"
-                        >
+                        <input type="text" id="member2Name"
+                               placeholder="Enter participant name">
                     </div>
 
                     <div class="form-group">
                         <label for="member2Email">Email Address</label>
-                        <input
-                            type="email"
-                            id="member2Email"
-                            placeholder="Enter email address"
-                        >
+                        <input type="email" id="member2Email"
+                               placeholder="Enter email address">
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- Run Test Button -->
             <button type="button" id="runConcurrentTest">
                 Run Concurrent Registration Test
             </button>
 
-            <!-- Test Results -->
             <div id="concurrentResults"></div>
 
         </section>
 
-        <!-- Dashboard Message -->
         <p id="dashboardMessage"></p>
 
     </main>
 
-    <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+    <!-- Cache-busted JavaScript -->
+    <script src="{{ url_for('static', filename='admin.js', v=3) }}"></script>
 
 </body>
 </html>
