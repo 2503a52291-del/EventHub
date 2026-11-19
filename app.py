@@ -352,7 +352,9 @@ def register():
 
     data = request.get_json(silent=True) or {}
 
-    username = data.get("username", "")
+    # FIX: Accept both "name" and "username" from frontend
+    username = data.get("username") or data.get("name", "")
+
     email = data.get("email", "")
 
     if not isinstance(username, str) or not isinstance(email, str):
